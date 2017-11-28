@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.support.common.CommonDao">
+	<select id="getArea" parameterType="com.support.common.Common" resultType="Map">
+		select id,name from sys_area 
+		<where>
+			<if test="pid !=null and pid !=''">
+				company = #{pid}
+			</if>
+		</where>
+		order by id
+	</select>
+	<select id="getCompany" parameterType="com.support.common.Common" resultType="Map">
+		<if test="version==1">
+			select id,name from sys_company where city=#{pid} order by id
+		</if>
+		<if test="version==2">
+			select id,name from sys_company where prov=#{pid} order by id
+		</if>
+		
+	</select>
+	<select id="getDept" parameterType="com.support.common.Common" resultType="Map">
+		select id,name from sys_department 
+		<where>
+			<if test="pid !=null and pid !=''">
+				company = #{pid}
+			</if>
+		</where>
+		order by id
+	</select>
+	<select id="getRole" parameterType="com.support.common.Common" resultType="Map">
+		select id,name from sys_role order by id
+	</select>
+	<select id="getProv"  resultType="Map">
+		select id,name from sys_city where pid=0 order by id
+	</select>
+	<select id="getCity" parameterType="com.support.common.Common" resultType="Map">
+		select id,name from sys_city
+		<where>
+			<if test="pid !='' and pid !=null">
+				pid=#{pid}
+			</if>
+		</where>
+		order by id
+	</select>
+	<select id="getCity1" parameterType="com.support.common.Common" resultType="Map">
+		select id,name from sys_city where pid=#{pid} order by id
+	</select>
+	<select id="getDict" parameterType="com.support.common.Common" resultType="Map">
+		select name,value from sys_dictitem where code = #{code} ORDER BY id
+	</select>
+	<select id="getDictType" parameterType="com.support.common.Common" resultType="Map">
+		select code as id,name from sys_dictType order by id
+	</select>
+</mapper>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.support.dao.RoleDao">
+	<select id="getAllRecords" parameterType="Map" resultType="Integer">
+		select count(t.id) from sys_role t 
+		<where>
+			<if test="keywords !=null and keywords !=''">
+			and t.name like '%${keywords}%'
+			</if>
+		</where>
+		order by t.id desc;
+	</select>
+	<select id="getAll" parameterType="Map" resultType="Map">
+		select t.id as role_id,t.name as role_name,t.auth as role_auth from sys_role t 
+		<where>
+			<if test="keywords !=null and keywords !=''">
+			and t.name like '%${keywords}%'
+			</if>
+		</where>
+		order by t.id desc
+		limit #{startNumber},#{rows}
+	</select>
+	<insert id="addRole" parameterType="com.support.model.Role">
+		insert into sys_role (name,auth) values (
+			#{name},#{auth}
+		)
+	</insert>
+	<update id="updateRole" parameterType="com.support.model.Role">
+		update sys_role set name = #{name},auth = #{auth}
+		where id=#{id}
+	</update>
+	<delete id="removeRole" parameterType="com.support.model.Role">
+		delete from sys_role where id in
+		<foreach collection="ids" index="index" item="id"
+            open="(" separator="," close=")">
+            #{id}
+        </foreach>
+	</delete>
+</mapper>

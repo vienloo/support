@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.support.dao.DictDao">
+	<select id="getAllRecords_dictType" parameterType="Map" resultType="Integer">
+		select count(t.id) from sys_dictType t 
+		<where>
+			<if test="keywords !=null and keywords !=''">
+			and t.name like '%${keywords}%'
+			</if>
+		</where>
+		order by t.id desc;
+	</select>
+	<select id="getAll_dictType" parameterType="Map" resultType="Map">
+		select t.id as dictType_id,t.code as dictType_code,t.name as dictType_name from sys_dictType t 
+		<where>
+			<if test="keywords !=null and keywords !=''">
+			and t.name like '%${keywords}%'
+			</if>
+		</where>
+		order by t.id desc
+		limit #{startNumber},#{rows}
+	</select>
+	<insert id="addDictType" parameterType="com.support.model.Dict">
+		insert into sys_dictType (code,name) values (
+			#{code},#{name}
+		)
+	</insert>
+	<update id="updateDictType" parameterType="com.support.model.Dict">
+		update sys_dictType set code = #{code},name = #{name}
+		where id=#{id}
+	</update>
+	<delete id="removeDictType" parameterType="com.support.model.Dict">
+		delete from sys_dictType where id in
+		<foreach collection="ids" index="index" item="item"
+            open="(" separator="," close=")">
+            #{item}
+        </foreach>
+	</delete>
+	
+	<select id="getAllRecords_dictItem" parameterType="Map" resultType="Integer">
+		select count(t.id) from sys_dictItem t 
+		<where>
+			<if test="keywords !=null and keywords !=''">
+			and t.name like '%${keywords}%'
+			</if>
+		</where>
+		order by t.id desc;
+	</select>
+	<select id="getAll_dictItem" parameterType="Map" resultType="Map">
+		select t.id as dictItem_id,a.name as dictItem_typeName,t.code as dictItem_code,t.name as dictItem_name,t.value as dictItem_value 
+		from sys_dictItem t left join sys_dictType a on t.code = a.code
+		<where>
+			<if test="keywords !=null and keywords !=''">
+			and t.name like '%${keywords}%'
+			</if>
+		</where>
+		order by t.id desc
+		limit #{startNumber},#{rows}
+	</select>
+	<insert id="addDictItem" parameterType="com.support.model.Dict">
+		insert into sys_dictItem (code,name,value) values (
+			#{code},#{name},#{value}
+		)
+	</insert>
+	<update id="updateDictItem" parameterType="com.support.model.Dict">
+		update sys_dictItem set code = #{code},name = #{name},value = #{value}
+		where id=#{id}
+	</update>
+	<delete id="removeDictItem" parameterType="com.support.model.Dict">
+		delete from sys_dictItem where id in
+		<foreach collection="ids" index="index" item="item"
+            open="(" separator="," close=")">
+            #{item}
+        </foreach>
+	</delete>
+</mapper>

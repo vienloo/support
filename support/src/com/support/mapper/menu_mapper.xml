@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.support.dao.MenuDao">
+	<select id="queryTopMenuList" resultType="com.support.model.Menu">
+		select * from sys_menu where isHeader =1 order by orderBy;
+	</select>
+	<select id="queryMenuList" parameterType="Map" resultType="Map">
+		select * from sys_menu where parentId = #{id} order by orderBy;
+	</select>
+	<select id="getAllMenuRecords" parameterType="Map" resultType="Integer">
+		select count(t.id) from sys_menu t 
+		<where>
+			<if test="keywords !=null and keywords !=''">
+			and t.name like '%${keywords}%'
+			</if>
+		</where>
+		order by t.id,t.orderBy
+	</select>
+	<select id="getAllMenu" parameterType="Map" resultType="Map">
+		select t.id as mainId,t.name as menuName,t.parentId,t.url,t.icon,t.orderBy,t.isHeader,t.type,t.type as typeName 
+		from sys_menu t 
+		<where>
+			<if test="keywords !=null and keywords !=''">
+			and t.name like '%${keywords}%'
+			</if>
+		</where>
+		order by t.id,t.orderBy
+		limit #{startNumber},#{rows}
+	</select>
+	<select id="selectAllMulu" resultType="Map">
+		select t.id menu_id,t.name menu_name from sys_menu t where t.type=0
+	</select>
+	<insert id="addMenu" parameterType="com.support.model.Menu">
+		insert into sys_menu (name,parentId,url,orderBy,type,isHeader) values (
+			#{name},#{parentId},#{url},#{orderBy},#{type},0
+		)
+	</insert>
+	<update id="updateMenu" parameterType="com.support.model.Menu">
+		update sys_menu set type = #{type},parentId = #{parentId},name = #{name},url = #{url},orderBy = #{orderBy}
+		where id=#{id}
+	</update>
+	<delete id="removeMenu" parameterType="com.support.model.Menu">
+		delete from sys_menu where id in
+		<foreach collection="ids" index="index" item="id"
+            open="(" separator="," close=")">
+            #{id}
+        </foreach>
+	</delete>
+</mapper>

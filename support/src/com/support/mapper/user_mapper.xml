@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.support.dao.UserDao">
+	<select id="getUserByLoginId" parameterType="com.support.model.User" 
+		resultType="com.support.model.User">
+		select p_code,loginId,password,name from sys_user where loginId = #{loginId}
+	</select>
+	<select id="getAllRecords" parameterType="Map" resultType="Integer">
+		select count(t.id) from sys_user t 
+		left join sys_company a on t.company = a.id
+		left join sys_department b on t.department = b.id
+		left join sys_role c on t.role = c.id
+		<where>
+			<if test="keywords !=null and keywords !=''">
+			and t.username like '%${keywords}%'
+			</if>
+		</where>
+		order by t.id desc;
+	</select>
+	<select id="getAll" parameterType="Map" resultType="Map">
+		select t.id as user_id,t.login_id,t.username as user_name,t.sex as user_sex,t.phone as user_phone,
+		t.company as user_company,a.name as user_companyName,t.department as user_dept,b.name as user_deptName,
+		t.worknum user_worknum,t.role as user_role,c.name as user_roleName
+		from sys_user t 
+		left join sys_company a on t.company = a.id
+		left join sys_department b on t.department = b.id
+		left join sys_role c on t.role = c.id
+		<where>
+			<if test="keywords !=null and keywords !=''">
+			and t.username like '%${keywords}%'
+			</if>
+		</where>
+		order by t.id desc
+		limit #{startNumber},#{rows}
+	</select>
+	<insert id="addUser" parameterType="com.support.model.User">
+		insert into sys_user (login_id,password,username,sex,phone,company,department,worknum,role) values (
+			#{loginId},123456,#{userName},#{sex},#{phone},#{company},#{department},#{worknum},#{role}
+		)
+	</insert>
+	<update id="updateUser" parameterType="com.support.model.User">
+		update sys_user set login_id = #{loginId},username = #{userName},sex = #{sex},phone = #{phone},
+			company = #{company},department = #{department},worknum = #{worknum},role = #{role}
+		where id=#{id}
+	</update>
+	<delete id="removeUser" parameterType="com.support.model.User">
+		delete from sys_user where id in
+		<foreach collection="ids" index="index" item="item"
+            open="(" separator="," close=")">
+            #{item}
+        </foreach>
+	</delete>
+	<update id="initPassWord" parameterType="com.support.model.User">
+		update sys_user set password = 123456
+		where id=#{id}
+	</update>
+	<update id="setPassword" parameterType="com.support.model.User">
+		update sys_user set password = #{password}
+		where login_id = #{loginId}
+	</update>
+	<select id="getUserCount" resultType="int">
+		select count(*) from sys_user
+	</select>
+	<select id="getSeq_user" resultType="int">
+		SELECT NEXTVAL('seq_user');
+	</select>
+	<insert id="register" parameterType="com.support.model.User">
+		INSERT INTO sys_user (p_code,loginId,password,name,phone,dept,role,unjob) VALUES (
+		#{p_code},#{loginId},#{password},#{name},#{phone},#{dept},#{role},1)
+	</insert>
+</mapper>
