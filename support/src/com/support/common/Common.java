@@ -2,7 +2,6 @@ package com.support.common;
 
 
 public class Common {
-
 	
 	private Integer id;
 	private Integer pid;
