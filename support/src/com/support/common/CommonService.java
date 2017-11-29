@@ -19,7 +19,8 @@ public class CommonService {
 	public Object getArea(Common common) {
 		List<Map<String, Object>> list = dao.getArea(common);
 		return Utils.result(0, "", list);
-	}
+	}    
+	
 
 	public Object getCompany(Common common) {
 		// 判断version号 1是海南版 2是公司版
